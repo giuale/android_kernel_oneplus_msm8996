@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#  Build Script for Render Kernel for OnePlus 3!
+#  Build Script for Dark Kernel for OnePlus 3/t!
 #  Based off AK'sbuild script - Thanks!
 #
 
