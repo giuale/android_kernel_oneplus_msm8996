@@ -1985,6 +1985,13 @@ err_pinctrl_get:
 	return retval;
 }
 
+bool s1302_is_keypad_stopped(void)
+{
+	struct synaptics_ts_data *ts = tc_g;
+
+	return ts->stop_keypad;
+}
+
 static int choice_gpio_function(struct synaptics_ts_data *ts)
 {
 	int ret=0;
