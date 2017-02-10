@@ -2698,10 +2698,8 @@ sirConvertAssocReqFrame2Struct(tpAniSirGlobal pMac,
     if (ar->ExtCap.present)
     {
         struct s_ext_cap *p_ext_cap;
-
-        vos_mem_copy(&pAssocReq->ExtCap.bytes, &ar->ExtCap.bytes,
-                     ar->ExtCap.num_bytes);
-
+        vos_mem_copy( &pAssocReq->ExtCap, &ar->ExtCap,
+                sizeof(tDot11fIEExtCap));
         p_ext_cap = (struct s_ext_cap *)&pAssocReq->ExtCap.bytes;
         limLog(pMac, LOG1,
                FL("ExtCap present, timingMeas: %d Initiator: %d Responder: %d"),
@@ -2897,9 +2895,8 @@ sirConvertAssocRespFrame2Struct(tpAniSirGlobal pMac,
     if (ar.ExtCap.present)
     {
         struct s_ext_cap *p_ext_cap;
-
-        vos_mem_copy(&pAssocRsp->ExtCap.bytes, &ar.ExtCap.bytes,
-                     ar.ExtCap.num_bytes);
+        vos_mem_copy( &pAssocRsp->ExtCap, &ar.ExtCap,
+                sizeof(tDot11fIEExtCap));
         p_ext_cap = (struct s_ext_cap *)&pAssocRsp->ExtCap.bytes;
         limLog(pMac, LOG1,
                FL("ExtCap present, timingMeas: %d Initiator: %d Responder: %d"),
@@ -3101,8 +3098,8 @@ sirConvertReassocReqFrame2Struct(tpAniSirGlobal pMac,
     {
         struct s_ext_cap *p_ext_cap = (struct s_ext_cap *)
                                        &ar.ExtCap.bytes;
-        vos_mem_copy(&pAssocReq->ExtCap.bytes, &ar.ExtCap.bytes,
-                     ar.ExtCap.num_bytes);
+        vos_mem_copy( &pAssocReq->ExtCap, &ar.ExtCap,
+                sizeof(tDot11fIEExtCap));
         limLog(pMac, LOG1,
                FL("ExtCap present, timingMeas: %d Initiator: %d Responder: %d"),
                p_ext_cap->timingMeas, p_ext_cap->fine_time_meas_initiator,
@@ -3681,6 +3678,32 @@ sirParseBeaconIE(tpAniSirGlobal        pMac,
     pBeaconStruct->Vendor1IEPresent = pBies->Vendor1IE.present;
     pBeaconStruct->Vendor2IEPresent = pBies->Vendor2IE.present;
     pBeaconStruct->Vendor3IEPresent = pBies->Vendor3IE.present;
+<<<<<<< HEAD
+=======
+    if (pBies->ExtCap.present) {
+        vos_mem_copy( &pBeaconStruct->ExtCap, &pBies->ExtCap,
+                sizeof(tDot11fIEExtCap));
+    }
+
+    pBeaconStruct->vendor2_ie.present = pBies->vendor2_ie.present;
+    if (pBies->vendor2_ie.present) {
+            pBeaconStruct->vendor2_ie.type = pBies->vendor2_ie.type;
+            pBeaconStruct->vendor2_ie.sub_type = pBies->vendor2_ie.sub_type;
+    }
+
+    if (pBies->vendor2_ie.VHTCaps.present) {
+            pBeaconStruct->vendor2_ie.VHTCaps.present = 1;
+            vos_mem_copy(&pBeaconStruct->vendor2_ie.VHTCaps,
+                            &pBies->vendor2_ie.VHTCaps,
+                            sizeof(tDot11fIEVHTCaps));
+    }
+    if (pBies->vendor2_ie.VHTOperation.present) {
+            pBeaconStruct->vendor2_ie.VHTOperation.present = 1;
+            vos_mem_copy(&pBeaconStruct->vendor2_ie.VHTOperation,
+                            &pBies->vendor2_ie.VHTOperation,
+                                sizeof(tDot11fIEVHTOperation));
+    }
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
     vos_mem_free(pBies);
     return eSIR_SUCCESS;

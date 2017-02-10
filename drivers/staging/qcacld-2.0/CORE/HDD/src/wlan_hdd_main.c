@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-2016 The Linux Foundation. All rights reserved.
+ * Copyright (c) 2012-2017 The Linux Foundation. All rights reserved.
  *
  * Previously licensed under the ISC license by Qualcomm Atheros, Inc.
  *
@@ -1069,18 +1069,32 @@ int wlan_hdd_validate_context(hdd_context_t *pHddCtx)
 {
 
     if (NULL == pHddCtx || NULL == pHddCtx->cfg_ini) {
+<<<<<<< HEAD
         hddLog(LOG1, FL("HDD context is Null"));
+=======
+        hddLog(LOG1, FL("%pS HDD context is Null"), (void *)_RET_IP_);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
         return -ENODEV;
     }
 
     if (pHddCtx->isLogpInProgress) {
+<<<<<<< HEAD
         hddLog(LOG1, FL("LOGP in Progress. Ignore!!!"));
+=======
+        hddLog(LOG1, FL("%pS LOGP in Progress. Ignore!!!"), (void *)_RET_IP_);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
         return -EAGAIN;
     }
 
     if ((pHddCtx->isLoadInProgress) ||
         (pHddCtx->isUnloadInProgress)) {
+<<<<<<< HEAD
         hddLog(LOG1, FL("Unloading/Loading in Progress. Ignore!!!"));
+=======
+        hddLog(LOG1,
+             FL("%pS Unloading/Loading in Progress. Ignore!!!"),
+             (void *)_RET_IP_);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
         return -EAGAIN;
     }
     return 0;
@@ -6200,7 +6214,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
                                                    pAdapter->sessionId,
                                                    nOpportunisticThresholdDiff);
        }
-       else if (strncmp(priv_data.buf, "GETOPPORTUNISTICRSSIDIFF", 24) == 0)
+       else if (strncmp(command, "GETOPPORTUNISTICRSSIDIFF", 24) == 0)
        {
            tANI_S8 val = sme_GetRoamOpportunisticScanThresholdDiff(
                                                                  pHddCtx->hHal);
@@ -6243,7 +6257,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
                                      pAdapter->sessionId,
                                      nRoamRescanRssiDiff);
        }
-       else if (strncmp(priv_data.buf, "GETROAMRESCANRSSIDIFF", 21) == 0)
+       else if (strncmp(command, "GETROAMRESCANRSSIDIFF", 21) == 0)
        {
            tANI_U8 val = sme_GetRoamRescanRssiDiff(pHddCtx->hHal);
            char extra[32];
@@ -9600,7 +9614,16 @@ static void __hdd_set_multicast_list(struct net_device *dev)
       return;
 
    /* Delete already configured multicast address list */
+<<<<<<< HEAD
    wlan_hdd_set_mc_addr_list(pAdapter, false);
+=======
+   if (0 < pAdapter->mc_addr_list.mc_cnt)
+      if (wlan_hdd_set_mc_addr_list(pAdapter, false)) {
+           hddLog(VOS_TRACE_LEVEL_ERROR, FL("failed to clear mc addr list"));
+           return;
+      }
+
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
    if (dev->flags & IFF_ALLMULTI)
    {
@@ -9651,7 +9674,8 @@ static void __hdd_set_multicast_list(struct net_device *dev)
    }
 
    /* Configure the updated multicast address list */
-   wlan_hdd_set_mc_addr_list(pAdapter, true);
+   if (wlan_hdd_set_mc_addr_list(pAdapter, true))
+       hddLog(VOS_TRACE_LEVEL_INFO, FL("failed to set mc addr list"));
 
    EXIT();
    return;
@@ -10711,7 +10735,12 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
                                   NL80211_IFTYPE_P2P_GO;
          pAdapter->device_mode = session_type;
 
+<<<<<<< HEAD
          status = hdd_init_ap_mode(pAdapter);
+=======
+         hdd_initialize_adapter_common(pAdapter);
+         status = hdd_init_ap_mode(pAdapter, false);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
          if( VOS_STATUS_SUCCESS != status )
             goto err_free_netdev;
 
@@ -11414,9 +11443,29 @@ VOS_STATUS hdd_reset_all_adapters( hdd_context_t *pHddCtx )
    while ( NULL != pAdapterNode && VOS_STATUS_SUCCESS == status )
    {
       pAdapter = pAdapterNode->pAdapter;
+
       hddLog(LOG1, FL("Disabling queues"));
+<<<<<<< HEAD
       netif_tx_disable(pAdapter->dev);
       netif_carrier_off(pAdapter->dev);
+=======
+
+      if (pHddCtx->cfg_ini->sap_internal_restart &&
+          pAdapter->device_mode == WLAN_HDD_SOFTAP) {
+          hddLog(LOG1, FL("driver supports sap restart"));
+          vos_flush_work(&pHddCtx->sap_start_work);
+          wlan_hdd_netif_queue_control(pAdapter,
+                                 WLAN_NETIF_TX_DISABLE,
+                                  WLAN_CONTROL_PATH);
+          hdd_sap_indicate_disconnect_for_sta(pAdapter);
+          hdd_cleanup_actionframe(pHddCtx, pAdapter);
+          hdd_sap_destroy_events(pAdapter);
+
+      } else
+          wlan_hdd_netif_queue_control(pAdapter,
+              WLAN_NETIF_TX_DISABLE_N_CARRIER,
+              WLAN_CONTROL_PATH);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
       pAdapter->sessionCtx.station.hdd_ReassocScenario = VOS_FALSE;
 
@@ -11591,7 +11640,17 @@ VOS_STATUS hdd_start_all_adapters( hdd_context_t *pHddCtx )
             break;
 
          case WLAN_HDD_SOFTAP:
-            /* softAP can handle SSR */
+            if (pHddCtx->cfg_ini->sap_internal_restart) {
+                hdd_init_ap_mode(pAdapter, true);
+
+#ifdef QCA_LL_TX_FLOW_CT
+                WLANTL_RegisterTXFlowControl(pHddCtx->pvosContext,
+                          hdd_softap_tx_resume_cb,
+                          pAdapter->sessionId,
+                          (void *)pAdapter);
+#endif
+
+            }
             break;
 
          case WLAN_HDD_P2P_GO:
@@ -15804,6 +15863,112 @@ static uint8_t hdd_find_prefd_safe_chnl(hdd_context_t *hdd_ctxt,
    return 0;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * hdd_unsafe_channel_restart_sap - restart sap if sap is on unsafe channel
+ * @hdd_ctx: hdd context pointer
+ *
+ * hdd_unsafe_channel_restart_sap check all unsafe channel list
+ * and if ACS is enabled, driver will ask userspace to restart the
+ * sap. User space on LTE coex indication restart driver.
+ *
+ * Return - none
+ */
+void hdd_unsafe_channel_restart_sap(hdd_context_t *hdd_ctx)
+{
+	hdd_adapter_list_node_t *adapter_node = NULL, *next = NULL;
+	eRfChannels channel_loop;
+	hdd_adapter_t *adapter;
+	VOS_STATUS status;
+
+	status = hdd_get_front_adapter(hdd_ctx, &adapter_node);
+	while (NULL != adapter_node && VOS_STATUS_SUCCESS == status) {
+		adapter = adapter_node->pAdapter;
+
+		if (!(adapter && (WLAN_HDD_SOFTAP == adapter->device_mode))) {
+			status = hdd_get_next_adapter(hdd_ctx, adapter_node,
+					&next);
+			adapter_node = next;
+			continue;
+		}
+		/*
+		 * If auto channel select is enabled
+		 * preferred channel is in safe channel,
+		 * re-start softap interface with safe channel.
+		 * no overlap with preferred channel and safe channel
+		 * do not re-start softap interface
+		 * stay current operating channel.
+		 */
+		if ((adapter->sessionCtx.ap.sapConfig.acs_cfg.acs_mode) &&
+				(!hdd_find_prefd_safe_chnl(hdd_ctx, adapter)))
+			return;
+
+		hddLog(LOG1, FL("Current operation channel %d"),
+			adapter->sessionCtx.ap.operatingChannel);
+
+		for (channel_loop = 0;
+			channel_loop < hdd_ctx->unsafe_channel_count;
+			channel_loop++) {
+			if (((hdd_ctx->unsafe_channel_list[channel_loop] ==
+				adapter->sessionCtx.ap.operatingChannel)) &&
+				(false == hdd_ctx->is_ch_avoid_in_progress) &&
+				(adapter->sessionCtx.ap.sapConfig.acs_cfg.
+				 acs_mode == true)) {
+				hdd_change_ch_avoidance_status(hdd_ctx, true);
+
+				vos_flush_work(
+					&hdd_ctx->sap_start_work);
+
+				/*
+				 * current operating channel
+				 * is un-safe channel, restart driver
+				 */
+				hddLog(LOGE,
+					FL("Restarting SAP due to unsafe channel"));
+
+				/* SAP restart due to unsafe channel. While
+				 * restarting the SAP, makee sure to clear
+				 * acs_channel, channel to reset to 0.
+				 * Otherwise these settings will override the
+				 * ACS while restart.
+				 */
+				hdd_ctx->acs_policy.acs_channel =
+							AUTO_CHANNEL_SELECT;
+				adapter->sessionCtx.ap.sapConfig.channel =
+							AUTO_CHANNEL_SELECT;
+
+				hddLog(LOG1, FL("set sapConfig.channel to %d"),
+						AUTO_CHANNEL_SELECT);
+
+				wlan_hdd_send_svc_nlink_msg(
+						hdd_ctx->radio_index,
+						WLAN_SVC_LTE_COEX_IND,
+						NULL,
+						0);
+
+				hddLog(LOG1, FL("driver to start sap: %d"),
+					hdd_ctx->cfg_ini->sap_internal_restart);
+				if (hdd_ctx->cfg_ini->sap_internal_restart) {
+					wlan_hdd_netif_queue_control(adapter,
+							WLAN_NETIF_TX_DISABLE,
+							WLAN_CONTROL_PATH);
+					schedule_work(
+					&hdd_ctx->sap_start_work);
+				}
+				else
+					hdd_hostapd_stop(adapter->dev);
+
+				return;
+			}
+		}
+		status = hdd_get_next_adapter(hdd_ctx, adapter_node, &next);
+		adapter_node = next;
+	}
+	return;
+}
+
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 /**---------------------------------------------------------------------------
 
   \brief hdd_ch_avoid_cb() -
@@ -16695,7 +16860,7 @@ void wlan_hdd_stop_sap(hdd_adapter_t *ap_adapter)
  *
  * Return: void.
  */
-void wlan_hdd_start_sap(hdd_adapter_t *ap_adapter)
+void wlan_hdd_start_sap(hdd_adapter_t *ap_adapter, bool reinit)
 {
     hdd_ap_ctx_t *hdd_ap_ctx;
     hdd_hostapd_state_t *hostapd_state;
@@ -16714,12 +16879,23 @@ void wlan_hdd_start_sap(hdd_adapter_t *ap_adapter)
     hostapd_state = WLAN_HDD_GET_HOSTAP_STATE_PTR(ap_adapter);
     pConfig = &ap_adapter->sessionCtx.ap.sapConfig;
 
+<<<<<<< HEAD
     if (0 != wlan_hdd_validate_context(hdd_ctx))
     {
         VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                    "%s: HDD context is not valid", __func__);
         return;
     }
+=======
+    VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
+              FL("ssr in progress %d"), reinit);
+
+     if (!reinit) {
+        if (0 != wlan_hdd_validate_context(hdd_ctx))
+            return;
+    }
+
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
     mutex_lock(&hdd_ctx->sap_lock);
     if (test_bit(SOFTAP_BSS_STARTED, &ap_adapter->event_flags))
         goto end;
@@ -17067,6 +17243,177 @@ const char *hdd_get_fwpath(void)
 	return fwpath.string;
 }
 
+<<<<<<< HEAD
+=======
+/**
+ * hdd_enable_disable_ca_event() - enable/disable channel avoidance event
+ * @hddctx: pointer to hdd context
+ * @set_value: enable/disable
+ *
+ * When Host sends vendor command enable, FW will send *ONE* CA ind to
+ * Host(even though it is duplicate). When Host send vendor command
+ * disable,FW doesn't perform any action. Whenever any change in
+ * CA *and* WLAN is in SAP/P2P-GO mode, FW sends CA ind to host.
+ *
+ * return - 0 on success, appropriate error values on failure.
+ */
+int hdd_enable_disable_ca_event(hdd_context_t *hddctx, tANI_U8 set_value)
+{
+	eHalStatus status;
+	int ret_val = 0;
+
+	if (0 != wlan_hdd_validate_context(hddctx)) {
+		ret_val = -EAGAIN;
+		goto exit;
+	}
+
+	if (!hddctx->cfg_ini->goptimize_chan_avoid_event) {
+		hddLog(VOS_TRACE_LEVEL_ERROR,
+			FL("goptimize_chan_avoid_event ini param disabled"));
+		ret_val = -EAGAIN;
+		goto exit;
+	}
+
+	status = sme_enable_disable_chanavoidind_event(hddctx->hHal, set_value);
+	if (status != eHAL_STATUS_SUCCESS) {
+		hddLog(VOS_TRACE_LEVEL_ERROR,
+			FL("Failed to send chan avoid command to SME"));
+		ret_val = -EINVAL;
+	}
+
+exit:
+	return ret_val;
+}
+
+#ifdef WLAN_FEATURE_PACKET_FILTERING
+/**
+ * hdd_init_packet_filtering - allocate packet filter MC address list
+ * @hdd_ctx: pointer to hdd context
+ * @adapter: pointer to hdd_adapter_t
+ *
+ * This function allocates memory for link layer MC address list which will
+ * be communicated to firmware for packet filtering in HOST suspend state.
+ *
+ * Return: 0 on success, error number otherwise.
+ */
+int hdd_init_packet_filtering(hdd_context_t *hdd_ctx,
+					hdd_adapter_t *adapter)
+{
+	adapter->mc_addr_list.addr =
+			vos_mem_malloc(hdd_ctx->max_mc_addr_list * ETH_ALEN);
+
+	if (NULL == adapter->mc_addr_list.addr) {
+		hddLog(LOGE, FL("Could not allocate Memory"));
+		return -ENOMEM;
+	}
+
+	vos_mem_zero(adapter->mc_addr_list.addr,
+		(hdd_ctx->max_mc_addr_list * ETH_ALEN));
+
+	return 0;
+}
+
+/**
+ * hdd_deinit_packet_filtering - deallocate packet filter MC address list
+ * @adapter: pointer to hdd_adapter_t
+ *
+ * Return: none
+ */
+void hdd_deinit_packet_filtering(hdd_adapter_t *adapter)
+{
+	vos_mem_free(adapter->mc_addr_list.addr);
+	adapter->mc_addr_list.addr = NULL;
+}
+#endif
+
+/**
+ * wlan_hdd_get_dfs_mode() - get ACS DFS mode
+ * @mode : cfg80211 DFS mode
+ *
+ * Return: return SAP ACS DFS mode else return ACS_DFS_MODE_NONE
+ */
+enum  sap_acs_dfs_mode wlan_hdd_get_dfs_mode(enum dfs_mode mode)
+{
+	switch (mode) {
+	case DFS_MODE_ENABLE:
+		return ACS_DFS_MODE_ENABLE;
+		break;
+	case DFS_MODE_DISABLE:
+		return ACS_DFS_MODE_DISABLE;
+		break;
+	case DFS_MODE_DEPRIORITIZE:
+		return ACS_DFS_MODE_DEPRIORITIZE;
+		break;
+	default:
+		hddLog(VOS_TRACE_LEVEL_ERROR,
+			FL("ACS dfs mode is NONE"));
+		return  ACS_DFS_MODE_NONE;
+	}
+}
+
+
+/**
+ * hdd_set_rps_cpu_mask - set RPS CPU mask for interfaces
+ * @hdd_ctx: pointer to hdd_context_t
+ *
+ * Return: none
+ */
+void hdd_set_rps_cpu_mask(hdd_context_t *hdd_ctx)
+{
+	hdd_adapter_t *adapter;
+	hdd_adapter_list_node_t *adapter_node, *next;
+	VOS_STATUS status = VOS_STATUS_SUCCESS;
+
+	status = hdd_get_front_adapter (hdd_ctx, &adapter_node);
+	while (NULL != adapter_node && VOS_STATUS_SUCCESS == status) {
+		adapter = adapter_node->pAdapter;
+		if (NULL != adapter)
+			hdd_dp_util_send_rps_ind(adapter);
+		status = hdd_get_next_adapter (hdd_ctx, adapter_node, &next);
+		adapter_node = next;
+	}
+}
+
+/**
+ * hdd_initialize_adapter_common() - initialize completion variables
+ * @adapter: pointer to hdd_adapter_t
+ *
+ * Return: none
+ */
+void hdd_initialize_adapter_common(hdd_adapter_t *adapter)
+{
+	if (NULL == adapter) {
+		hddLog(VOS_TRACE_LEVEL_ERROR, "%s: adapter is NULL ", __func__);
+		return;
+	}
+	init_completion(&adapter->session_open_comp_var);
+	init_completion(&adapter->session_close_comp_var);
+	init_completion(&adapter->disconnect_comp_var);
+	init_completion(&adapter->linkup_event_var);
+	init_completion(&adapter->cancel_rem_on_chan_var);
+	init_completion(&adapter->rem_on_chan_ready_event);
+	init_completion(&adapter->offchannel_tx_event);
+	init_completion(&adapter->tx_action_cnf_event);
+#ifdef FEATURE_WLAN_TDLS
+	init_completion(&adapter->tdls_add_station_comp);
+	init_completion(&adapter->tdls_del_station_comp);
+	init_completion(&adapter->tdls_mgmt_comp);
+	init_completion(&adapter->tdls_link_establish_req_comp);
+#endif
+
+#ifdef WLAN_FEATURE_RMC
+	init_completion(&adapter->ibss_peer_info_comp);
+#endif /* WLAN_FEATURE_RMC */
+	init_completion(&adapter->ula_complete);
+	init_completion(&adapter->change_country_code);
+	init_completion(&adapter->smps_force_mode_comp_var);
+	init_completion(&adapter->scan_info.scan_req_completion_event);
+	init_completion(&adapter->scan_info.abortscan_event_var);
+
+	return;
+}
+
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 //Register the module init/exit functions
 module_init(hdd_module_init);
 module_exit(hdd_module_exit);

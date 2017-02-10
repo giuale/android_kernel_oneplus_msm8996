@@ -4209,6 +4209,59 @@ REG_TABLE_ENTRY g_registry_table[] =
                 CFG_TGT_GTX_USR_CFG_DEFAULT,
                 CFG_TGT_GTX_USR_CFG_MIN,
                 CFG_TGT_GTX_USR_CFG_MAX),
+<<<<<<< HEAD
+=======
+
+   REG_VARIABLE(CFG_SAP_INTERNAL_RESTART_NAME, WLAN_PARAM_Integer,
+                hdd_config_t, sap_internal_restart,
+                VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_SAP_INTERNAL_RESTART_DEFAULT,
+                CFG_SAP_INTERNAL_RESTART_MIN,
+                CFG_SAP_INTERNAL_RESTART_MAX),
+
+   REG_VARIABLE(CFG_BUG_ON_REINIT_FAILURE_NAME, WLAN_PARAM_Integer,
+                hdd_config_t, bug_on_reinit_failure,
+                VAR_FLAGS_OPTIONAL |
+                VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_BUG_ON_REINIT_FAILURE_DEFAULT,
+                CFG_BUG_ON_REINIT_FAILURE_MIN,
+                CFG_BUG_ON_REINIT_FAILURE_MAX),
+
+   REG_VARIABLE(CFG_SAP_FORCE_11N_FOR_11AC_NAME, WLAN_PARAM_Integer,
+                hdd_config_t, sap_force_11n_for_11ac,
+                VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_SAP_FORCE_11N_FOR_11AC_DEFAULT,
+                CFG_SAP_FORCE_11N_FOR_11AC_MIN,
+                CFG_SAP_FORCE_11N_FOR_11AC_MAX),
+
+   REG_VARIABLE(CFG_SAP_MAX_INACTIVITY_OVERRIDE_NAME, WLAN_PARAM_Integer,
+                hdd_config_t, sap_max_inactivity_override,
+                VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_SAP_MAX_INACTIVITY_OVERRIDE_DEFAULT,
+                CFG_SAP_MAX_INACTIVITY_OVERRIDE_MIN,
+                CFG_SAP_MAX_INACTIVITY_OVERRIDE_MAX),
+
+   REG_VARIABLE(CFG_ACTIVE_MODE_OFFLOAD, WLAN_PARAM_Integer,
+                hdd_config_t, active_mode_offload,
+                VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_ACTIVE_MODE_OFFLOAD_DEFAULT,
+                CFG_ACTIVE_MODE_OFFLOAD_MIN,
+                CFG_ACTIVE_MODE_OFFLOAD_MAX),
+
+   REG_VARIABLE(CFG_SIFS_BURST_DURATION_NAME, WLAN_PARAM_Integer,
+                hdd_config_t, sifs_burst_duration,
+                VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+                CFG_SIFS_BURST_DURATION_DEFAULT,
+                CFG_SIFS_BURST_DURATION_MIN,
+                CFG_SIFS_BURST_DURATION_MAX),
+
+  REG_VARIABLE(CFG_BPF_PACKET_FILTER_OFFLOAD, WLAN_PARAM_Integer,
+               struct hdd_config, bpf_packet_filter_enable,
+               VAR_FLAGS_OPTIONAL | VAR_FLAGS_RANGE_CHECK_ASSUME_DEFAULT,
+               CFG_BPF_PACKET_FILTER_OFFLOAD_DEFAULT,
+               CFG_BPF_PACKET_FILTER_OFFLOAD_MIN,
+               CFG_BPF_PACKET_FILTER_OFFLOAD_MAX),
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 };
 
 #ifdef WLAN_FEATURE_MBSSID
@@ -4286,8 +4339,8 @@ static char *i_trim(char *str)
 
    /* Find the first non white-space*/
    for (ptr = str; i_isspace(*ptr); ptr++);
-   if (*ptr == '\0')
-      return str;
+      if (*ptr == '\0')
+         return str;
 
    /* This is the new start of the string*/
    str = ptr;
@@ -4295,8 +4348,8 @@ static char *i_trim(char *str)
    /* Find the last non white-space */
    ptr += strlen(ptr) - 1;
    for (; ptr != str && i_isspace(*ptr); ptr--);
-   /* Null terminate the following character */
-   ptr[1] = '\0';
+      /* Null terminate the following character */
+      ptr[1] = '\0';
 
    return str;
 }
@@ -4897,6 +4950,29 @@ void print_hdd_cfg(hdd_context_t *pHddCtx)
   hddLog(LOG2, "Name = [%s] Value = [%u]",
                  CFG_TGT_GTX_USR_CFG_NAME,
                  pHddCtx->cfg_ini->tgt_gtx_usr_cfg);
+<<<<<<< HEAD
+=======
+
+  hddLog(LOG2, "Name = [%s] Value = [%u]",
+                 CFG_SAP_INTERNAL_RESTART_NAME,
+                 pHddCtx->cfg_ini->sap_internal_restart);
+
+  hddLog(LOG2, "Name = [%s] Value = [%u]",
+                CFG_SAP_FORCE_11N_FOR_11AC_NAME,
+                pHddCtx->cfg_ini->sap_force_11n_for_11ac);
+  hddLog(LOG2, "Name = [%s] Value = [%u]",
+          CFG_SAP_MAX_INACTIVITY_OVERRIDE_NAME,
+          pHddCtx->cfg_ini->sap_max_inactivity_override);
+  hddLog(LOG2, "Name = [%s] Value = [%u]",
+                 CFG_ACTIVE_MODE_OFFLOAD,
+                 pHddCtx->cfg_ini->active_mode_offload);
+
+  hddLog(LOG2, "Name = [%s] Value = [%u]",
+                 CFG_BPF_PACKET_FILTER_OFFLOAD,
+                 pHddCtx->cfg_ini->bpf_packet_filter_enable);
+
+  hdd_ndp_print_ini_config(pHddCtx);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 }
 
 #define CFG_VALUE_MAX_LEN 256
@@ -5997,10 +6073,6 @@ v_BOOL_t hdd_update_config_dat( hdd_context_t *pHddCtx )
 #if defined WLAN_FEATURE_VOWIFI
     if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_MCAST_BCAST_FILTER_SETTING, pConfig->mcastBcastFilterSetting,
                      NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
-     {
-        fStatus = FALSE;
-        hddLog(LOGE,"Failure: Could not pass on WNI_CFG_MCAST_BCAST_FILTER_SETTING configuration info to CCM");
-     }
 #endif
 
      if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_SINGLE_TID_RC, pConfig->bSingleTidRc,

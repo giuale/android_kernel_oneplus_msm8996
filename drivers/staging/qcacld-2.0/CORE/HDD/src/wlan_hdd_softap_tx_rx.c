@@ -280,6 +280,7 @@ int __hdd_softap_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
 
    pDestMacAddress = (v_MACADDR_t*)skb->data;
 
+<<<<<<< HEAD
    if (vos_is_macaddr_broadcast( pDestMacAddress ) ||
        vos_is_macaddr_group(pDestMacAddress))
    {
@@ -294,6 +295,56 @@ int __hdd_softap_hard_start_xmit(struct sk_buff *skb, struct net_device *dev)
          VOS_TRACE(VOS_MODULE_ID_HDD_SAP_DATA, VOS_TRACE_LEVEL_WARN,
                     "%s: Failed to find the station id", __func__);
            goto drop_pkt;
+=======
+       if (vos_is_macaddr_broadcast( pDestMacAddress ) ||
+           vos_is_macaddr_group(pDestMacAddress))
+       {
+           // The BC/MC station ID is assigned during BSS starting phase.
+           // SAP will return the station ID used for BC/MC traffic.
+           STAId = pHddApCtx->uBCStaId;
+       }
+       else
+       {
+           if (VOS_STATUS_SUCCESS !=
+               hdd_softap_GetStaId(pAdapter, pDestMacAddress, &STAId)) {
+               VOS_TRACE(VOS_MODULE_ID_HDD_SAP_DATA, VOS_TRACE_LEVEL_WARN,
+                        "%s: Failed to find the station id", __func__);
+               goto drop_pkt;
+           }
+
+           if (STAId == HDD_WLAN_INVALID_STA_ID || STAId >= WLAN_MAX_STA_COUNT)
+           {
+               VOS_TRACE( VOS_MODULE_ID_HDD_SAP_DATA, VOS_TRACE_LEVEL_WARN,
+                          "%s: Failed to find right station", __func__);
+               goto drop_pkt;
+           }
+           else if (FALSE == pAdapter->aStaInfo[STAId].isUsed )
+           {
+               VOS_TRACE( VOS_MODULE_ID_HDD_SAP_DATA, VOS_TRACE_LEVEL_WARN,
+                    "%s: STA %d is unregistered", __func__, STAId);
+               goto drop_pkt;
+           }
+
+           if ((WLANTL_STA_CONNECTED !=
+                pAdapter->aStaInfo[STAId].tlSTAState) &&
+               (WLANTL_STA_AUTHENTICATED !=
+                pAdapter->aStaInfo[STAId].tlSTAState) )
+           {
+               VOS_TRACE( VOS_MODULE_ID_HDD_SAP_DATA, VOS_TRACE_LEVEL_WARN,
+                          "%s: Station not connected yet", __func__);
+               goto drop_pkt;
+           }
+           else if(WLANTL_STA_CONNECTED ==
+                   pAdapter->aStaInfo[STAId].tlSTAState)
+           {
+               if(ntohs(skb->protocol) != HDD_ETHERTYPE_802_1_X)
+               {
+                   VOS_TRACE( VOS_MODULE_ID_HDD_SAP_DATA, VOS_TRACE_LEVEL_WARN,
+                   "%s: NON-EAPOL packet in non-Authenticated state", __func__);
+                   goto drop_pkt;
+               }
+           }
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
        }
 
       if (STAId == HDD_WLAN_INVALID_STA_ID)

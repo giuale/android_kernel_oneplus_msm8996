@@ -2112,7 +2112,7 @@ typedef enum
 #define CFG_TDLS_EXTERNAL_CONTROL                   "gTDLSExternalControl"
 #define CFG_TDLS_EXTERNAL_CONTROL_MIN               (0)
 #define CFG_TDLS_EXTERNAL_CONTROL_MAX               (1)
-#define CFG_TDLS_EXTERNAL_CONTROL_DEFAULT           (0)
+#define CFG_TDLS_EXTERNAL_CONTROL_DEFAULT           (1)
 
 #define CFG_TDLS_OFF_CHANNEL_SUPPORT_ENABLE          "gEnableTDLSOffChannel"
 #define CFG_TDLS_OFF_CHANNEL_SUPPORT_ENABLE_MIN      (0)
@@ -3412,6 +3412,81 @@ enum dot11p_mode {
 #define CFG_TGT_GTX_USR_CFG_MAX       (32)
 #define CFG_TGT_GTX_USR_CFG_DEFAULT   (32)
 
+<<<<<<< HEAD
+=======
+#define CFG_SAP_INTERNAL_RESTART_NAME    "gEnableSapInternalRestart"
+#define CFG_SAP_INTERNAL_RESTART_MIN     (0)
+#define CFG_SAP_INTERNAL_RESTART_MAX     (1)
+#define CFG_SAP_INTERNAL_RESTART_DEFAULT (0)
+
+/*
+ * This parameter will help to debug ssr reinit failure issues
+ * by raising vos bug so dumps can be collected. If OEM
+ * wants to avoid this crash, just disable this parameter.
+ * wlan driver will only recover after driver unload and load.
+ * Default: Enable
+ */
+#define CFG_BUG_ON_REINIT_FAILURE_NAME     "g_bug_on_reinit_failure"
+#define CFG_BUG_ON_REINIT_FAILURE_MIN      (0)
+#define CFG_BUG_ON_REINIT_FAILURE_MAX      (1)
+#define CFG_BUG_ON_REINIT_FAILURE_DEFAULT  (1)
+
+/*
+ * This parameter will avoid updating ap_sta_inactivity from hostapd.conf
+ * file. If a station does not send anything in ap_max_inactivity seconds, an
+ * empty data frame is sent to it in order to verify whether it is
+ * still in range. If this frame is not ACKed, the station will be
+ * disassociated and then deauthenticated. This feature is used to
+ * clear station table of old entries when the STAs move out of the
+ * range.
+ * Default : Disable
+ */
+#define CFG_SAP_MAX_INACTIVITY_OVERRIDE_NAME     "gSapMaxInactivityOverride"
+#define CFG_SAP_MAX_INACTIVITY_OVERRIDE_DEFAULT  (0)
+#define CFG_SAP_MAX_INACTIVITY_OVERRIDE_MIN      (0)
+#define CFG_SAP_MAX_INACTIVITY_OVERRIDE_MAX      (1)
+
+/*
+ * In static display use case when APPS is in stand alone power save mode enable
+ * active offload mode which helps FW to filter out MC/BC data packets to avoid
+ * APPS wake up and save more power.
+ *
+ * By default enable active mode offload as it helps to save more power in
+ * static display usecase(APPS stand alone power collapse).
+ *
+ * If active mode offload(gActiveModeOffload=1) is enabled then all applicable
+ * data offload/filtering is enabled immediately in FW once config is available
+ * in WLAN driver and FW caches this configuration accross suspend/resume
+ *
+ * If active mode offload is disabled(gActiveModeOffload=0) then all applicable
+ * data offload/filtering is enabled during cfg80211 suspend and disabled
+ * during cfg80211 resume
+ */
+#define CFG_ACTIVE_MODE_OFFLOAD            "gActiveModeOffload"
+#define CFG_ACTIVE_MODE_OFFLOAD_MIN        (0)
+#define CFG_ACTIVE_MODE_OFFLOAD_MAX        (1)
+#define CFG_ACTIVE_MODE_OFFLOAD_DEFAULT    (0)
+
+
+/*
+ * This parameter will control SIFS burst duration in FW from 0 to 12 ms.
+ * Default value is set to 8ms.
+ */
+
+#define CFG_SIFS_BURST_DURATION_NAME     "g_sifs_burst_duration"
+#define CFG_SIFS_BURST_DURATION_MIN      (0)
+#define CFG_SIFS_BURST_DURATION_MAX      (12)
+#define CFG_SIFS_BURST_DURATION_DEFAULT  (8)
+
+/*
+ * 0: Disable BPF packet filter
+ * 1: Enable BPF packet filter
+ */
+#define CFG_BPF_PACKET_FILTER_OFFLOAD           "gBpfFilterEnable"
+#define CFG_BPF_PACKET_FILTER_OFFLOAD_MIN       (0)
+#define CFG_BPF_PACKET_FILTER_OFFLOAD_MAX       (1)
+#define CFG_BPF_PACKET_FILTER_OFFLOAD_DEFAULT   (1)
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
 /*---------------------------------------------------------------------------
   Type declarations
@@ -4112,7 +4187,23 @@ typedef struct
    uint16_t                    sap_tx_leakage_threshold;
    /* parameter to control GTX */
    uint32_t                    tgt_gtx_usr_cfg;
+<<<<<<< HEAD
 } hdd_config_t;
+=======
+   bool                        sap_internal_restart;
+   bool                        bug_on_reinit_failure;
+   /* parameter to force sap into 11n */
+   bool                        sap_force_11n_for_11ac;
+   uint8_t                     sap_max_inactivity_override;
+   bool                        active_mode_offload;
+   /* parameter for indicating sifs burst duration to fw */
+   uint8_t                     sifs_burst_duration;
+
+   bool bpf_packet_filter_enable;
+};
+
+typedef struct hdd_config hdd_config_t;
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
 #ifdef WLAN_FEATURE_MBSSID
 typedef struct mbssid_sap_dyn_ini_config {

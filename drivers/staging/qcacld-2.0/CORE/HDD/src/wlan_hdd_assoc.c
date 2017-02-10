@@ -1610,7 +1610,18 @@ static void hdd_sap_restart_handle(struct work_struct *work)
     }
     wlan_hdd_start_sap(sap_adapter);
 
+<<<<<<< HEAD
     hdd_change_sap_restart_required_status(hdd_ctx, false);
+=======
+    if (hdd_ctx->is_ch_avoid_in_progress) {
+        sap_adapter->sessionCtx.ap.sapConfig.channel = AUTO_CHANNEL_SELECT;
+        wlan_hdd_restart_sap(sap_adapter);
+        hdd_change_ch_avoidance_status(hdd_ctx, false);
+    } else {
+        wlan_hdd_start_sap(sap_adapter, false);
+        hdd_change_sap_restart_required_status(hdd_ctx, false);
+    }
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
     vos_ssr_unprotect(__func__);
 }
 
@@ -3889,7 +3900,8 @@ hdd_smeRoamCallback(void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U32 roamId,
                 /* Call to clear any MC Addr List filter applied after
                  * successful connection.
                  */
-                wlan_hdd_set_mc_addr_list(pAdapter, FALSE);
+                if (wlan_hdd_set_mc_addr_list(pAdapter, FALSE))
+                    hddLog(VOS_TRACE_LEVEL_ERROR, FL("failed to clear mc addr list"));
 #endif
             }
             break;

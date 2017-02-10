@@ -3595,3 +3595,46 @@ void hif_pm_ssr_runtime_allow_suspend(struct hif_pci_softc *sc, void *context)
 	__hif_pm_runtime_allow_suspend(sc, context);
 }
 #endif
+<<<<<<< HEAD
+=======
+
+/**
+ * hif_is_80211_fw_wow_required() - API to check if target suspend is needed
+ *
+ * API determines if fw can be suspended and returns true/false to the caller.
+ * Caller will call WMA WoW API's to suspend.
+ * This API returns true only for SDIO bus types, for others it's a false.
+ *
+ * Return: bool
+ */
+bool hif_is_80211_fw_wow_required(void)
+{
+	return false;
+}
+
+/* hif_addr_in_boundary() - API to check if addr is with in PCIE BAR range
+ * @hif_device:  context of cd
+ * @offset: offset from PCI BAR mapped base address.
+ *
+ * API determines if address to be accessed is with in range or out
+ * of bound.
+ *
+ * Return: success if address is with in PCI BAR range.
+ */
+int hif_addr_in_boundary(HIF_DEVICE *hif_device, A_UINT32 offset)
+{
+	struct HIF_CE_state *hif_state;
+	struct hif_pci_softc *sc;
+
+	hif_state = (struct HIF_CE_state *)hif_device;
+	sc = hif_state->sc;
+	if (unlikely(offset + sizeof(unsigned int) > sc->mem_len)) {
+		VOS_TRACE(VOS_MODULE_ID_HIF, VOS_TRACE_LEVEL_ERROR,
+			"refusing to read mmio out of bounds at 0x%08x - 0x%08zx (max 0x%08zx)\n",
+			offset, offset + sizeof(unsigned int), sc->mem_len);
+		return -EINVAL;
+	}
+
+	return 0;
+}
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0

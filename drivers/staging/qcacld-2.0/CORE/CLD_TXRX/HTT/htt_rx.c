@@ -1422,6 +1422,11 @@ htt_rx_amsdu_rx_in_order_pop_ll(
     /* Get the total number of MSDUs */
     msdu_count = HTT_RX_IN_ORD_PADDR_IND_MSDU_CNT_GET(*(msg_word + 1));
     HTT_RX_CHECK_MSDU_COUNT(msdu_count);
+<<<<<<< HEAD
+=======
+    peer_id = HTT_RX_IN_ORD_PADDR_IND_PEER_ID_GET(
+                                 *(u_int32_t *)rx_ind_data);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
     msg_word = (u_int32_t *)(rx_ind_data + HTT_RX_IN_ORD_PADDR_IND_HDR_BYTES);
     if (offload_ind) {
@@ -1430,6 +1435,11 @@ htt_rx_amsdu_rx_in_order_pop_ll(
         *head_msdu = *tail_msdu = NULL;
         return 0;
     }
+
+    peer = ol_txrx_peer_find_by_id(pdev->txrx_pdev, peer_id);
+    if (!peer)
+        adf_os_print(KERN_DEBUG "%s: invalid peer id %d and msdu count %d\n",
+                     __func__, peer_id, msdu_count);
 
     (*head_msdu) = msdu =
         htt_rx_in_order_netbuf_pop(pdev,

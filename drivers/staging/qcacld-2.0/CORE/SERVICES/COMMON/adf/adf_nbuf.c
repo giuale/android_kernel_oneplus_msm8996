@@ -518,6 +518,7 @@ __adf_nbuf_trace_update(struct sk_buff *buf, char *event_string)
                    NBUF_PKT_TRAC_MAX_STRING);
    adf_os_mem_copy(string_buf,
                    event_string, adf_os_str_len(event_string));
+<<<<<<< HEAD
    if (NBUF_PKT_TRAC_TYPE_EAPOL &
        adf_nbuf_trace_get_proto_type(buf)) {
       adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
@@ -534,6 +535,35 @@ __adf_nbuf_trace_update(struct sk_buff *buf, char *event_string)
       adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
                       "MACT",
                       NBUF_PKT_TRAC_PROTO_STRING);
+=======
+   switch (adf_nbuf_trace_get_proto_type(buf)) {
+   case NBUF_PKT_TRAC_TYPE_EAPOL:
+      adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
+                      "EPL", adf_os_str_len("EPL"));
+      break;
+   case NBUF_PKT_TRAC_TYPE_DHCP:
+      adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
+                      "DHC", adf_os_str_len("DHC"));
+      break;
+   case NBUF_PKT_TRAC_TYPE_MGMT_ACTION:
+      adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
+                      "MACT", adf_os_str_len("MACT"));
+      break;
+   case NBUF_PKT_TRAC_TYPE_ARP:
+      adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
+                      "ARP", adf_os_str_len("ARP"));
+      break;
+   case NBUF_PKT_TRAC_TYPE_NS:
+      adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
+                      "NS", adf_os_str_len("NS"));
+      break;
+   case NBUF_PKT_TRAC_TYPE_NA:
+      adf_os_mem_copy(string_buf + adf_os_str_len(event_string),
+                      "NA", adf_os_str_len("NA"));
+      break;
+   default:
+      break;
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
    }
 
    trace_update_cb(string_buf);

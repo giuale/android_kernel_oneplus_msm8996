@@ -11724,8 +11724,6 @@ void wma_vdev_resp_timer(void *data)
 		}
 		WMA_LOGI("%s: bssid %pM vdev_id %d", __func__, params->bssId,
 						tgt_req->vdev_id);
-		wma_send_msg(wma, WDA_ADD_BSS_RSP, (void *)params, 0);
-		goto free_tgt_req;
 error0:
 		if (peer)
 			wma_remove_peer(wma, params->bssId,
@@ -25276,8 +25274,8 @@ VOS_STATUS wma_get_buf_extscan_hotlist_cmd(tp_wma_handle wma_handle,
 	/* setbssid hotlist expects the bssid list
 	 * to be non zero value
 	 */
-	if (!numap) {
-		WMA_LOGE("%s: Invalid number of bssid's", __func__);
+	if ((numap <= 0) || (numap > WLAN_EXTSCAN_MAX_HOTLIST_APS)) {
+		WMA_LOGE("%s: Invalid number of APs: %d", __func__, numap);
 		return VOS_STATUS_E_INVAL;
 	}
 	num_entries = wma_get_hotlist_entries_per_page(wma_handle->wmi_handle,
@@ -25569,9 +25567,9 @@ VOS_STATUS wma_get_buf_extscan_change_monitor_cmd(tp_wma_handle wma_handle,
 	int numap = psigchange->numAp;
 	tSirAPThresholdParam  *src_ap = psigchange->ap;
 
-	if (!numap) {
-		WMA_LOGE("%s: Invalid number of bssid's",
-			__func__);
+	if ((numap <= 0) || (numap > WLAN_EXTSCAN_MAX_SIGNIFICANT_CHANGE_APS)) {
+		WMA_LOGE("%s: Invalid number of APs: %d",
+			__func__, numap);
 		return VOS_STATUS_E_INVAL;
 	}
 	len += WMI_TLV_HDR_SIZE;
@@ -33159,6 +33157,17 @@ int wma_dfs_indicate_radar(struct ieee80211com *ic,
 	if ((ichan->ic_ieee  != (wma->dfs_ic->last_radar_found_chan)) ||
 	    ( pmac->sap.SapDfsInfo.disable_dfs_ch_switch == VOS_TRUE) )
 	{
+<<<<<<< HEAD
+=======
+		radar_event = (struct wma_dfs_radar_indication *)
+			vos_mem_malloc(sizeof(*radar_event));
+		if (radar_event == NULL) {
+			WMA_LOGE(FL("Failed to allocate memory for radar_event"));
+			adf_os_spin_unlock_bh(&ic->chan_lock);
+			return -ENOMEM;
+		}
+
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 		/* Indicate the radar event to HDD to stop the netif Tx queues*/
 		hdd_radar_event.ieee_chan_number = ichan->ic_ieee;
 		hdd_radar_event.chan_freq = ichan->ic_freq;

@@ -665,6 +665,81 @@ inline bool wmi_get_runtime_pm_inprogress(wmi_unified_t wmi_handle)
 }
 #endif
 
+<<<<<<< HEAD
+=======
+static uint16_t wmi_tag_vdev_set_cmd(wmi_unified_t wmi_hdl, wmi_buf_t buf)
+{
+	wmi_vdev_set_param_cmd_fixed_param *set_cmd;
+
+	set_cmd = (wmi_vdev_set_param_cmd_fixed_param *)wmi_buf_data(buf);
+
+	switch(set_cmd->param_id) {
+	case WMI_VDEV_PARAM_LISTEN_INTERVAL:
+	case WMI_VDEV_PARAM_DTIM_POLICY:
+		return HTC_TX_PACKET_TAG_AUTO_PM;
+	default:
+		break;
+	}
+
+	return 0;
+}
+
+static uint16_t wmi_tag_sta_powersave_cmd(wmi_unified_t wmi_hdl, wmi_buf_t buf)
+{
+	wmi_sta_powersave_param_cmd_fixed_param *ps_cmd;
+
+	ps_cmd = (wmi_sta_powersave_param_cmd_fixed_param *)wmi_buf_data(buf);
+
+	switch(ps_cmd->param) {
+	case WMI_STA_PS_PARAM_TX_WAKE_THRESHOLD:
+	case WMI_STA_PS_PARAM_INACTIVITY_TIME:
+	case WMI_STA_PS_ENABLE_QPOWER:
+		return HTC_TX_PACKET_TAG_AUTO_PM;
+	default:
+		break;
+	}
+
+	return 0;
+}
+
+static uint16_t wmi_tag_common_cmd(wmi_unified_t wmi_hdl, wmi_buf_t buf,
+				   WMI_CMD_ID cmd_id)
+{
+	tp_wma_handle wma = wmi_hdl->scn_handle;
+
+	if (adf_os_atomic_read(&wma->is_wow_bus_suspended))
+		return 0;
+
+	switch(cmd_id) {
+	case WMI_VDEV_SET_PARAM_CMDID:
+		return wmi_tag_vdev_set_cmd(wmi_hdl, buf);
+	case WMI_STA_POWERSAVE_PARAM_CMDID:
+		return wmi_tag_sta_powersave_cmd(wmi_hdl, buf);
+	default:
+		break;
+	}
+
+	return 0;
+}
+
+static uint16_t wmi_tag_fw_hang_cmd(wmi_unified_t wmi_handle)
+{
+	uint16_t tag = 0;
+
+	if (adf_os_atomic_read(&wmi_handle->is_target_suspended)) {
+		pr_err("%s: Target is already suspended, Ignore FW Hang Command\n",
+			__func__);
+		return tag;
+	}
+
+	if (wmi_handle->tag_crash_inject)
+		tag = HTC_TX_PACKET_TAG_AUTO_PM;
+
+	wmi_handle->tag_crash_inject = false;
+	return tag;
+}
+
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 /**
  * wmi_set_htc_tx_tag() - set HTC TX tag for WMI commands
  * @wmi_handle: WMI handle

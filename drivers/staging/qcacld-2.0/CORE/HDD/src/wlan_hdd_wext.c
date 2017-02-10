@@ -2739,6 +2739,13 @@ static int __iw_set_genie(struct net_device *dev, struct iw_request_info *info,
         hddLog(VOS_TRACE_LEVEL_INFO, "%s: IE[0x%X], LEN[%d]",
             __func__, elementId, eLen);
 
+        if (remLen < eLen) {
+            hddLog(LOGE, "Remaining len: %u less than ie len: %u",
+                   remLen, eLen);
+            ret = -EINVAL;
+            goto exit;
+        }
+
         switch ( elementId )
          {
             case IE_EID_VENDOR:
@@ -2821,8 +2828,11 @@ static int __iw_set_genie(struct net_device *dev, struct iw_request_info *info,
                 hddLog (LOGE, "%s Set UNKNOWN IE %X",__func__, elementId);
                 goto exit;
     }
-        genie += eLen;
         remLen -= eLen;
+
+        /* Move genie only if next element is present */
+        if (remLen >= 2)
+            genie += eLen;
     }
 exit:
     EXIT();
@@ -8962,9 +8972,15 @@ static int __iw_set_var_ints_getnone(struct net_device *dev,
                 hddLog(LOG1, "%s: LOG_DUMP %d arg1 %d arg2 %d arg3 %d arg4 %d",
                         __func__, apps_args[0], apps_args[1], apps_args[2],
                         apps_args[3], apps_args[4]);
+<<<<<<< HEAD
 
                 logPrintf(hHal, apps_args[0], apps_args[1], apps_args[2],
                         apps_args[3], apps_args[4]);
+=======
+                if (hHal)
+                    return logPrintf(hHal, apps_args[0], apps_args[1],
+                                     apps_args[2], apps_args[3], apps_args[4]);
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
             }
             break;
@@ -10245,36 +10261,64 @@ int wlan_hdd_setIPv6Filter(hdd_context_t *pHddCtx, tANI_U8 filterType,
     return 0;
 }
 
+<<<<<<< HEAD
 void wlan_hdd_set_mc_addr_list(hdd_adapter_t *pAdapter, v_U8_t set)
+=======
+/**
+ * wlan_hdd_set_mc_addr_list() - Set multicast address list
+ * @pAdapter: Adapter context
+ * @set: flag to notify set/clear action on the multicast addr
+ *
+ * Returns: 0 on success, errno on failure
+ */
+int wlan_hdd_set_mc_addr_list(hdd_adapter_t *pAdapter, v_U8_t set)
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 {
     v_U8_t i;
+    int ret = 0;
     tpSirRcvFltMcAddrList pMulticastAddrs = NULL;
     tHalHandle hHal = NULL;
     hdd_context_t* pHddCtx = (hdd_context_t*)pAdapter->pHddCtx;
 
+<<<<<<< HEAD
     if (NULL == pHddCtx)
     {
         hddLog(VOS_TRACE_LEVEL_ERROR, FL("HDD CTX is NULL"));
         return;
     }
+=======
+    ENTER();
+
+    if ((ret = wlan_hdd_validate_context(pHddCtx)))
+        return ret;
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 
     hHal = pHddCtx->hHal;
 
     if (NULL == hHal)
     {
         hddLog(VOS_TRACE_LEVEL_ERROR, FL("HAL Handle is NULL"));
-        return;
+        return -EINVAL;
     }
 
+<<<<<<< HEAD
     /* Check if INI is enabled or not, other wise just return
      */
     if (pHddCtx->cfg_ini->fEnableMCAddrList)
     {
+=======
+    if (!sta_ctx) {
+        hddLog(LOGE, "sta_ctx is NULL");
+        return -EINVAL;
+    }
+
+    if (pHddCtx->cfg_ini->fEnableMCAddrList) {
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
         pMulticastAddrs = vos_mem_malloc(sizeof(tSirRcvFltMcAddrList));
         if (NULL == pMulticastAddrs)
         {
             hddLog(VOS_TRACE_LEVEL_ERROR, FL("Could not allocate Memory"));
-            return;
+            return -ENOMEM;
         }
         vos_mem_zero(pMulticastAddrs, sizeof(tSirRcvFltMcAddrList));
         pMulticastAddrs->action = set;
@@ -10337,8 +10381,15 @@ void wlan_hdd_set_mc_addr_list(hdd_adapter_t *pAdapter, v_U8_t set)
     {
         hddLog(VOS_TRACE_LEVEL_INFO,
                 FL("gMCAddrListEnable is not enabled in INI"));
+        return -EINVAL;
     }
+<<<<<<< HEAD
     return;
+=======
+
+    EXIT();
+    return ret;
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
 }
 
 static int __iw_set_packet_filter_params(struct net_device *dev,
@@ -11317,6 +11368,60 @@ static int __iw_set_two_ints_getnone(struct net_device *dev,
                                               value[1], value[2], GEN_CMD);
         break;
 #endif
+<<<<<<< HEAD
+=======
+    case WE_SET_MON_MODE_CHAN:
+        /*
+         * TODO: Remove this private implementation use standard
+         * interface wlan_hdd_cfg80211_ops.set_monitor_channel
+         */
+        if (VOS_MONITOR_MODE == hdd_get_conparam()) {
+            uint16_t vht_channel_width = value[2];
+            hdd_station_ctx_t *sta_ctx =
+                    WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
+            struct hdd_mon_set_ch_info *ch_info = &sta_ctx->ch_info;
+            eHalStatus hal_status;
+
+            tHalHandle hal_hdl = hdd_ctx->hHal;
+            tCsrBssid bssid = {0};
+            tCsrRoamProfile roam_profile;
+
+            hddLog(LOG1, "Set monitor mode Channel %d", value[1]);
+            hdd_select_mon_cbmode(pAdapter, value[1], &vht_channel_width);
+            roam_profile.ChannelInfo.ChannelList = &ch_info->channel;
+            roam_profile.ChannelInfo.numOfChannels = 1;
+            roam_profile.vht_channel_width = ch_info->channel_width;
+            roam_profile.phyMode = ch_info->phy_mode;
+
+            vos_mem_copy(bssid, pAdapter->macAddressCurrent.bytes,
+                         VOS_MAC_ADDR_SIZE);
+
+            hal_status = sme_RoamChannelChangeReq(hal_hdl,
+                                 bssid,
+                                 ch_info->cb_mode, &roam_profile);
+            if (!HAL_STATUS_SUCCESS(hal_status)) {
+                hddLog(LOGE,
+                       "Failed to set sme_RoamChannel for monitor mode");
+                ret = -EINVAL;
+            }
+        } else {
+            hddLog(LOGE, "Not supported, device is not in monitor mode");
+            ret = -EINVAL;
+        }
+        break;
+    case WE_DUMP_DP_TRACE_LEVEL:
+        hddLog(LOG1, "WE_DUMP_DP_TRACE_LEVEL: %d %d",
+                       value[1], value[2]);
+        if (value[1] == DUMP_DP_TRACE)
+            adf_dp_trace_dump_all(value[2]);
+        else if (value[1] == ENABLE_DP_TRACE_LIVE_MODE)
+            adf_dp_trace_enable_live_mode();
+        else if (value[1] == CLEAR_DP_TRACE_BUFFER)
+            adf_dp_trace_clear_buffer();
+        else
+            hddLog(LOGE, "unexpected value for dump_dp_trace");
+        break;
+>>>>>>> 580fee5e73a... qcacld-2.0: Update to LA.UM.5.5.r1-02800-8x96.0
     default:
         hddLog(LOGE, "%s: Invalid IOCTL command %d", __func__, sub_cmd);
         break;
