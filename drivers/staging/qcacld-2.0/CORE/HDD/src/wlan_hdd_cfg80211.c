@@ -189,6 +189,11 @@
 #define HDD_CHANNEL_14 14
 #define WLAN_HDD_MAX_FEATURE_SET   8
 
+<<<<<<< HEAD
+=======
+#define IS_DFS_MODE_VALID(mode) ((mode >= DFS_MODE_NONE && mode <= DFS_MODE_DEPRIORITIZE))
+
+>>>>>>> 4721d191318... qcacld-2.0: Update to LA.UM.5.5.r1-03400-8x96.0
 #ifdef FEATURE_WLAN_EXTSCAN
 /*
  * Used to allocate the size of 4096 for the EXTScan NL data.
