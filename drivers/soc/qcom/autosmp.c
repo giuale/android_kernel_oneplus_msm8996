@@ -36,10 +36,20 @@
 #include <linux/earlysuspend.h>
 #endif
 
+<<<<<<< HEAD
 #define HOTPLUG_ENABLED 1
 #define DEBUG 0
 #define ASMP_TAG "AutoSMP: "
 #define ASMP_STARTDELAY 20000
+=======
+#define ASMP_TAG			"AutoSMP:"
+#define ASMP_ENABLED			true
+#define DEFAULT_BOOST_LOCK_DUR		800 * 1000L
+#define DEFAULT_NR_CPUS_BOOSTED		2
+#define DEFAULT_UPDATE_RATE		30
+#define MIN_INPUT_INTERVAL		150 * 1000L
+#define DEFAULT_MIN_BOOST_FREQ		1728000
+>>>>>>> dfd722e41dc... drivers: Autosmp enable by default
 
 struct asmp_cpudata_t {
 	long long unsigned int times_hotplugged;
