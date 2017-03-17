@@ -81,7 +81,7 @@ echo "sduzz Kernel Creation Script:"
 echo -e "${restore}"
 
 echo "Pick Toolchain..."
-select choice in aarch64-5.3 aarch64-6.3 aarch64-linux-android-4.9 linaro-6.3
+select choice in aarch64-5.3 aarch64-6.3 aarch64-linux-android-4.9 linaro-6.3 ubertc-6.0 ubertc-7.0
 do
 case "$choice" in
 	"aarch64-5.3")
@@ -95,6 +95,12 @@ case "$choice" in
 		break;;
 	"linaro-6.3")
 		export CROSS_COMPILE=${HOME}/project/toolchain/aarch64-6.3-linaro/bin/aarch64-linux-gnu-
+		break;;
+	"ubertc-6.0")
+		export CROSS_COMPILE=${HOME}/project/toolchain/UBERTC-aarch64-6.0/bin/aarch64-linux-android-
+		break;;
+	"ubertc-7.0")
+		export CROSS_COMPILE=${HOME}/project/toolchain/UBERTC-aarch64-7.0/bin/aarch64-linux-android-
 		break;;
 esac
 done
