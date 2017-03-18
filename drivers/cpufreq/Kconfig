@@ -171,13 +171,8 @@ config CPU_FREQ_DEFAULT_GOV_WHEATLEY
 	select CPU_FREQ_GOV_PERFORMANCE
 	---help---
 	  Use the CPUFreq governor 'wheatley' as default.
-<<<<<<< HEAD
-
-config CPU_FREQ_DEFAULT_GOV_DESPAIR
-=======
  
 config CPU_FREQ_DEFAULT_GOV_DESPAIR 
->>>>>>> 4053950fb7c... cpufreq: Add Relaxed governor
 	bool "despair"
 	select CPU_FREQ_GOV_DESPAIR
 	help
@@ -214,20 +209,6 @@ config CPU_FREQ_DEFAULT_GOV_ALUCARD
           It has been known to be battery friendly without sacrificing much performance. If unsure have a look at the help section of the
 	  driver. Fallback governor will be the performance governor.
 
-<<<<<<< HEAD
-=======
-config CPU_FREQ_DEFAULT_GOV_CHILL
-	bool "chill"
-	select CPU_FREQ_GOV_CHILL
-	select CPU_FREQ_GOV_INTERACTIVE
-	help
-	  Use the CPUFreq governor 'chill' as default. This allows
-	  you to get a full dynamic frequency capable system by simply
-	  loading your cpufreq low-level hardware driver.
-	  Be aware that not all cpufreq drivers support the conservative
-	  governor. If unsure have a look at the help section of the
-	  driver. Fallback governor will be the interactive governor.
-
 config CPU_FREQ_DEFAULT_GOV_RELAXED
 	bool "relaxed"
 	select CPU_FREQ_GOV_RELAXED
@@ -240,7 +221,6 @@ config CPU_FREQ_DEFAULT_GOV_RELAXED
 	  governor. If unsure have a look at the help section of the
 	  driver. Fallback governor will be the interactive governor.
 
->>>>>>> 4053950fb7c... cpufreq: Add Relaxed governor
 endchoice
 
 config CPU_FREQ_GOV_PERFORMANCE
