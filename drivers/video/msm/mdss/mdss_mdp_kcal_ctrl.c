@@ -177,12 +177,7 @@ static int mdss_mdp_kcal_display_commit(void)
 	for (i = 0; i < mdata->nctl; i++) {
 		ctl = mdata->ctl_off + i;
 		/* pp setup requires mfd */
-<<<<<<< HEAD
-		if (mdss_mdp_ctl_is_power_on(ctl) && ctl->mfd &&
-				ctl->mfd->index == 0) {
-=======
 		if ((mdss_mdp_ctl_is_power_on(ctl)) && (ctl->mfd)) {
->>>>>>> 7a325a829be... msm: mdss: KCAL: Send a pp display commit when changes are made
 			ret = mdss_mdp_pp_setup(ctl);
 			if (ret)
 				pr_err("%s: setup failed: %d\n", __func__, ret);
@@ -411,11 +406,7 @@ static ssize_t kcal_enable_store(struct device *dev,
 
 	mdss_mdp_kcal_update_pcc(lut_data);
 	mdss_mdp_kcal_update_pa(lut_data);
-<<<<<<< HEAD
-	//mdss_mdp_kcal_update_igc(lut_data);
-=======
 	mdss_mdp_kcal_update_igc(lut_data);
->>>>>>> 7a325a829be... msm: mdss: KCAL: Send a pp display commit when changes are made
 	mdss_mdp_kcal_display_commit();
 
 	return count;
@@ -443,13 +434,8 @@ static ssize_t kcal_invert_store(struct device *dev,
 	//disable
 	lut_data->invert = 0;
 
-<<<<<<< HEAD
-	//mdss_mdp_kcal_update_igc(lut_data);
-	//mdss_mdp_kcal_display_commit();
-=======
 	mdss_mdp_kcal_update_igc(lut_data);
 	mdss_mdp_kcal_display_commit();
->>>>>>> 7a325a829be... msm: mdss: KCAL: Send a pp display commit when changes are made
 
 	return count;
 }
