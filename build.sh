@@ -48,7 +48,6 @@ function clean_all {
 		cd $KERNEL_DIR
 		echo
 		make clean && make mrproper
-		ccache -c && ccache -C
 }
 
 function make_kernel {
