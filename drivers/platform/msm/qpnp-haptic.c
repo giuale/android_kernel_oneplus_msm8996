@@ -1328,8 +1328,6 @@ static ssize_t qpnp_hap_ramp_test_data_show(struct device *dev,
 
 }
 
-<<<<<<< HEAD
-=======
 static ssize_t qpnp_hap_vmax_mv_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -1403,7 +1401,6 @@ static ssize_t qpnp_hap_default_show(struct device *dev,
 	return scnprintf(buf, PAGE_SIZE, "%d\n", hap->vtg_default);
 }
 
->>>>>>> 655b3bc4a81... msm: qpnp-haptic: set up sysfs interface for common cmhw implementation
 /* sysfs attributes */
 static struct device_attribute qpnp_hap_attrs[] = {
 	__ATTR(wf_s0, (S_IRUGO | S_IWUSR | S_IWGRP),
@@ -1451,8 +1448,6 @@ static struct device_attribute qpnp_hap_attrs[] = {
 	__ATTR(min_max_test, (S_IRUGO | S_IWUSR | S_IWGRP),
 			qpnp_hap_min_max_test_data_show,
 			qpnp_hap_min_max_test_data_store),
-<<<<<<< HEAD
-=======
 	__ATTR(vtg_level, (S_IRUGO | S_IWUSR | S_IWGRP),
 			qpnp_hap_vmax_mv_show,
 			qpnp_hap_vmax_mv_store),
@@ -1465,7 +1460,6 @@ static struct device_attribute qpnp_hap_attrs[] = {
 	__ATTR(vtg_default, S_IRUGO,
 			qpnp_hap_default_show,
 			NULL),
->>>>>>> 655b3bc4a81... msm: qpnp-haptic: set up sysfs interface for common cmhw implementation
 };
 
 static int calculate_lra_code(struct qpnp_hap *hap)
