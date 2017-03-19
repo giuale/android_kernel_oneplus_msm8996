@@ -32,11 +32,8 @@ static bool enable_timerfd_ws = true;
 module_param(enable_timerfd_ws, bool, 0644);
 static bool enable_netlink_ws = true;
 module_param(enable_netlink_ws, bool, 0644);
-<<<<<<< HEAD
 static bool enable_ipa_ws = false;
 module_param(enable_ipa_ws, bool, 0644);
-=======
->>>>>>> parent of 58a212385b4... power: wakeup: prevent IPA_WS wakelock from being acquired by default
 
 /*
  * If set, the suspend/hibernate code will abort transitions to a sleep state
@@ -518,10 +515,7 @@ static void wakeup_source_activate(struct wakeup_source *ws)
                         !strncmp(ws->name, "[timerfd]", 9)) ||
 		(!enable_netlink_ws &&
                         !strncmp(ws->name, "NETLINK", 7))) {
-<<<<<<< HEAD
 	if (!enable_ipa_ws && !strncmp(ws->name, "IPA_WS", 6)) {
-=======
->>>>>>> parent of 58a212385b4... power: wakeup: prevent IPA_WS wakelock from being acquired by default
 		if (ws->active)
 			wakeup_source_deactivate(ws);
 
