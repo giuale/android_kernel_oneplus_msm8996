@@ -20,8 +20,8 @@ KERNEL="Image.gz-dtb"
 DEFCONFIG="sduzz_defconfig"
 
 # Kernel Details
-BASE_SDUZZ_VER=sduzz-Kernel
-VER=".001-ALPHA"
+BASE_SDUZZ_VER=Dark-Kernel
+VER="1.0-rc1"
 VARIANT="OP3T-OOS"
 
 # Vars
