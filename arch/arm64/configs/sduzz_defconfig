@@ -340,12 +340,6 @@ CONFIG_PCI_LABEL=y
 # CONFIG_HOTPLUG_PCI is not set
 
 #
-# Kernel Features
-#
-CONFIG_LCD_NOTIFIER=y
-CONFIG_ADRENO_IDLER=y
-
-#
 # ARM errata workarounds via the alternatives framework
 #
 CONFIG_ARM64_ERRATUM_826319=y
@@ -4555,11 +4549,7 @@ CONFIG_IOSCHED_TRIPNDROID=y
 CONFIG_IOSCHED_SIOPLUS=y 
 CONFIG_IOSCHED_ZEN=y
 CONFIG_POWERSUSPEND=y
-<<<<<<< HEAD:arch/arm64/configs/sduzz_defconfig
 CONFIG_CRYPTO_CRC32_ARM64=y
 CONFIG_CRYPTO_SHA256_ARM=y
 CONFIG_FORCE_FAST_CHARGE=y
-=======
-CONFIG_SOUND_CONTROL=y
-CONFIG_FORCE_FAST_CHARGE=y 
->>>>>>> 4407c017ca0... Introduce Adreno idler for devfreq-based Adreno devices:arch/arm64/configs/kroniccore_defconfig
+CONFIG_ADRENO_IDLER=y
