@@ -26,17 +26,6 @@ static bool enable_wlan_extscan_wl_ws = true;
 module_param(enable_wlan_extscan_wl_ws, bool, 0644);
 static bool enable_ipa_ws = true;
 module_param(enable_ipa_ws, bool, 0644);
-<<<<<<< HEAD
-static bool enable_wlan_ws = true;
-module_param(enable_wlan_ws, bool, 0644);
-static bool enable_timerfd_ws = true;
-module_param(enable_timerfd_ws, bool, 0644);
-static bool enable_netlink_ws = true;
-module_param(enable_netlink_ws, bool, 0644);
-static bool enable_ipa_ws = false;
-module_param(enable_ipa_ws, bool, 0644);
-=======
->>>>>>> parent of 277721e7785... drivers: wakeup: add options to disable timerfd, netlink and wlan wakelocks
 
 /*
  * If set, the suspend/hibernate code will abort transitions to a sleep state
@@ -511,18 +500,7 @@ static void wakeup_source_activate(struct wakeup_source *ws)
 		(!enable_wlan_extscan_wl_ws &&
 			!strncmp(ws->name, "wlan_extscan_wl", 15)) ||
 		(!enable_qcom_rx_wakelock_ws &&
-<<<<<<< HEAD
-			!strncmp(ws->name, "qcom_rx_wakelock", 16)) ||
-		(!enable_wlan_ws &&
-                        !strncmp(ws->name, "wlan", 4)) ||
-		(!enable_timerfd_ws &&
-                        !strncmp(ws->name, "[timerfd]", 9)) ||
-		(!enable_netlink_ws &&
-                        !strncmp(ws->name, "NETLINK", 7))) {
-	if (!enable_ipa_ws && !strncmp(ws->name, "IPA_WS", 6)) {
-=======
 			!strncmp(ws->name, "qcom_rx_wakelock", 16))) {
->>>>>>> parent of 277721e7785... drivers: wakeup: add options to disable timerfd, netlink and wlan wakelocks
 		if (ws->active)
 			wakeup_source_deactivate(ws);
 
