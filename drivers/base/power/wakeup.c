@@ -20,7 +20,6 @@
 
 #include "power.h"
 
-<<<<<<< HEAD
 static bool enable_qcom_rx_wakelock_ws = true;
 module_param(enable_qcom_rx_wakelock_ws, bool, 0644);
 static bool enable_wlan_extscan_wl_ws = true;
@@ -33,10 +32,8 @@ static bool enable_timerfd_ws = true;
 module_param(enable_timerfd_ws, bool, 0644);
 static bool enable_netlink_ws = true;
 module_param(enable_netlink_ws, bool, 0644);
-=======
 static bool enable_ipa_ws = false;
 module_param(enable_ipa_ws, bool, 0644);
->>>>>>> fbbcb2e7eeb... power: wakeup: prevent IPA_WS wakelock from being acquired by default
 
 /*
  * If set, the suspend/hibernate code will abort transitions to a sleep state
@@ -507,7 +504,6 @@ static void wakeup_source_activate(struct wakeup_source *ws)
 {
 	unsigned int cec;
 
-<<<<<<< HEAD
 	if ((!enable_ipa_ws && !strncmp(ws->name, "IPA_WS", 6)) ||
 		(!enable_wlan_extscan_wl_ws &&
 			!strncmp(ws->name, "wlan_extscan_wl", 15)) ||
@@ -519,9 +515,7 @@ static void wakeup_source_activate(struct wakeup_source *ws)
                         !strncmp(ws->name, "[timerfd]", 9)) ||
 		(!enable_netlink_ws &&
                         !strncmp(ws->name, "NETLINK", 7))) {
-=======
 	if (!enable_ipa_ws && !strncmp(ws->name, "IPA_WS", 6)) {
->>>>>>> fbbcb2e7eeb... power: wakeup: prevent IPA_WS wakelock from being acquired by default
 		if (ws->active)
 			wakeup_source_deactivate(ws);
 
