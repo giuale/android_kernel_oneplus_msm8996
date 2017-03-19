@@ -22,7 +22,7 @@ DEFCONFIG="sduzz_defconfig"
 # Kernel Details
 BASE_SDUZZ_VER=Dark-Kernel
 VER="1.0-rc1"
-VARIANT="OP3T-OOS"
+VARIANT="DARK-OOS"
 
 # Vars
 export LOCALVERSION=~`echo $VER`
